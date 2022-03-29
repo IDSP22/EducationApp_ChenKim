@@ -10,7 +10,9 @@ output:
 
 Odds ratios (OR) can be calculated using a two-by-two frequency table (also called cross-tabulation or contingency table)
 
-__place holder for the table__
+```{r, include=T, echo=F, out.width = "60%"}
+knitr::include_graphics(here::here("images/fig_definition.jpg"))
+```
 
 * Odds of event under exposure to treatment = $\frac{a}{b}$
 * Odds of event without exposure to treatment = $\frac{c}{d}$
