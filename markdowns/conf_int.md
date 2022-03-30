@@ -30,3 +30,5 @@ abs(qnorm((1-conf.level)/2))
 ```
 
 ### Let’s go back to the previous example
+
+Specify the sample size and the confidence level for the investigation of party attendants using the sliders. 

@@ -12,5 +12,7 @@ Confidence interval for OR does not report a measure’s statistical significanc
 
 Nevertheless, it would be __inappropriate__ to interpret an OR with 95% CI that spans the null value as indicating evidence for lack of association between the exposure and outcome.
 
-* __Example 1)__ the odds of persistent suicidal behaviour in the group given presence of borderline personality disorder at baseline was twice that of depression (OR 3.8, 95% CI:1.6–8.7), and was statistically significant (p 0.002)
-* __Example 2)__
+### Quiz
+
+After investigating 500 attendants, the epidemiologists from health authority concluded that the odds of having diarrhea and nausea within a day from Beyonce and Jay-Z’s party was higher among those who consumed pizza than those who did not consume pizza during the party __(Odds Ratio = 1.2, 95% Confidence Interval: 0.98 – 1.56)__. Based on this result, can you conclude that there is a significant association between the pizza consumption and the sickness? 
+
