@@ -20,29 +20,7 @@ pacman::p_load(
     knitr
 )
 
-### Define custom theme
-theme_ks <- bslib::bs_theme(
-    version = ,
-    bg = "#FfFfFf",
-    fg = "#183a5a",
-    # dark navy (title, base font and stuff)
-    primary = "#183a5a",
-    # tab font color and hover block color etc
-    secondary = "#353842",
-    # (for messages that don't need to stand out)
-    success = "#0b5b67",
-    # dark green
-    info = "#3e83a8",
-    # ligher dark blue (text that are informative not critical)
-    warning = "#EFb758",
-    # mustard-ish yellow
-    danger = "#C34129",
-    # blood orange
-    base_font = font_google("Source Sans Pro"),
-    code_font = font_google("Fira Mono"),
-    heading_font = font_google("Oswald"),
-    font_scale = 0.9
-)
+source(here::here("helper.R"))
 
 ### Define UIs for each step separately
 
@@ -70,7 +48,45 @@ definition <- tabPanel(
     # Markdown text chunk
     includeMarkdown(here::here('markdowns/definition.md')),
 
-    ###### UI for the quiz goes here ######
+    # Quiz for the definition
+    fluidRow(column(12,
+        radioButtons(
+            "definition_quiz1",
+            label = HTML("<b>Question 1</b>. What is the potential <u>exposure</u> of interest?"),
+            choices = c("Nausea", "Diarrhea", "Pizza"),
+            selected = character(0),
+            inline = T
+        ),
+        radioButtons(
+            "definition_quiz2",
+            label = HTML("<b>Question 2</b>. What is the <u>outcome</u> of interest?"),
+            choices = c("Jason Momoa", "Getting sick (nausea and diarrhea)", "Consuming Pizza"),
+            selected = character(0),
+            inline = T
+        )
+    )
+    ),
+    
+    ## result text
+    fluidRow(
+        column(12,
+               htmlOutput("definition_quiz_res")
+        ),
+        align = "center"
+    ),
+    
+    br(),
+    
+    ## submit button
+    fluidRow(
+        column(12,
+               actionButton("definition_quiz_submit",
+                            "Submit",
+                            style = "background-color: #353842; border-color: transparent")
+        ),
+        align = "center"),
+    
+    br(),
     
     # Action button to move to the next step
     fluidRow(column(
@@ -201,6 +217,40 @@ interpret <- tabPanel(
     # Markdown text chunk
     includeMarkdown(here::here('markdowns/interpret.md')),
     
+    # UI for quiz
+    ## question
+    fluidRow(column(12,
+                    radioButtons("interpret_quiz",
+                                 label = "",
+                                 choices = c("Yes", "No"),
+                                 selected = character(0),
+                                 inline = T,
+                                 choiceValues = c(T, F))
+        ),
+        align = "center"
+    ),
+    
+    ## result text
+    fluidRow(
+        column(12,
+            htmlOutput("interpret_quiz_res")
+            ),
+        align = "center"
+    ),
+    
+    br(),
+    
+    ## submit button
+    fluidRow(
+        column(12,
+               actionButton("interpret_quiz_submit",
+                            "Submit",
+                            style = "background-color: #353842; border-color: transparent")
+        ),
+        align = "center"),
+    
+    br(),
+    
     # Action button to move to the next step
     fluidRow(column(
         12,
@@ -273,6 +323,7 @@ shinyUI(
         
         # Set to use shinyjs
         shinyjs::useShinyjs(),
+        shinyFeedback::useShinyFeedback(),
         
         # Sidebar with step-by-step instructions
         tab_steps

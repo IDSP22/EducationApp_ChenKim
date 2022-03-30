@@ -4,6 +4,7 @@ output:
     keep_md: TRUE
 ---
 
+
 # Interpretation of Results
 
 &nbsp;
@@ -15,4 +16,6 @@ Nevertheless, it would be __inappropriate__ to interpret an OR with 95% CI that 
 ### Quiz
 
 After investigating 500 attendants, the epidemiologists from health authority concluded that the odds of having diarrhea and nausea within a day from Beyonce and Jay-Z’s party was higher among those who consumed pizza than those who did not consume pizza during the party __(Odds Ratio = 1.2, 95% Confidence Interval: 0.98 – 1.56)__. Based on this result, can you conclude that there is a significant association between the pizza consumption and the sickness? 
+
+
 
