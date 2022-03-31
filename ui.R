@@ -17,7 +17,8 @@ pacman::p_load(
     sortable,
     ggthemr,
     markdown,
-    knitr
+    knitr,
+    DT
 )
 
 source(here::here("helper.R"))
@@ -112,7 +113,139 @@ calculate <- tabPanel(
     # Markdown text chunk
     withMathJax(includeMarkdown(here::here('markdowns/calculate.md'))),
     
-    ###### UI for the quiz goes here ######
+
+    # Quiz to calculate odds ratio
+    
+    ## Quiz 1. Table to fill in
+    fluidRow(
+        column(12,
+               HTML("<b>Quiz 1.</b> Fill in the table below with correct values. (Double click the cell to change the value)"))
+    ),
+    
+    fluidRow(
+        column(8,
+            DTOutput(outputId="calculate_table",
+                     width = "96%"),
+            style = "align: right"
+        ),
+        column(4,
+               actionButton("calculate_quiz1_submit",
+                            "Check Answer",
+                            style = "background-color: #353842; border-color: transparent;"),
+               style = "margin-top: 80px; align: left"
+        )
+    ),
+    fluidRow(
+        column(8,
+               htmlOutput("calculate_quiz1_res")
+               ),
+        align="center"
+    ),
+    br(),
+    ## Quiz 2.
+    fluidRow(
+        column(12,
+               HTML("<b>Quiz 2.</b> What is the odd of getting sick among those who <u>ate</u> pizza?"))
+    ),
+    fluidRow(
+        column(2,
+                numericInput("calculate_quiz2_1", "",value=NULL),
+               style = "align:center"
+               ),
+        column(1,
+                h3("/"),
+               style = "align: center"
+               ),
+        column(2,
+                numericInput("calculate_quiz2_2", "", value=NULL),
+               style = "align:left"
+            ),
+        column(3,
+               
+        ),
+        column(4,
+               actionButton("calculate_quiz2_submit",
+                            "Check Answer",
+                            style = "background-color: #353842; border-color: transparent;"),
+               style = "margin-top: 25px; align: left"
+        )
+    ),
+    fluidRow(
+        column(5,
+               htmlOutput("calculate_quiz2_res")
+        ),
+        align="center"
+    ),
+    br(),
+    
+    ## Quiz 3.
+    fluidRow(
+        column(12,
+               HTML("<b>Quiz 3.</b> What is the odd of getting sick among those who <u>did not eat</u> pizza?"))
+    ),
+    fluidRow(
+        column(2,
+               numericInput("calculate_quiz3_1", "",value=NULL),
+               style = "align:center"
+        ),
+        column(1,
+               h3("/"),
+               style = "align: center"
+        ),
+        column(2,
+               numericInput("calculate_quiz3_2", "", value=NULL),
+               style = "align:left"
+        ),
+        column(3,
+               
+        ),
+        column(4,
+               actionButton("calculate_quiz3_submit",
+                            "Check Answer",
+                            style = "background-color: #353842; border-color: transparent;"),
+               style = "margin-top: 25px; align: left"
+        )
+    ),
+    fluidRow(
+        column(5,
+               htmlOutput("calculate_quiz3_res")
+        ),
+        align="center"
+    ),
+    br(),
+    
+    ## Quiz 4.
+    fluidRow(
+        column(12,
+               HTML("<b>Quiz 4.</b> What is the <u>odds ratio</u> of getting sick among those who ate pizza 
+                    vs. those who did not eat pizza??"))
+    ),
+    
+    fluidRow(
+        column(8,
+               radioButtons("calculate_quiz4",
+                            "",
+                            choices = c(
+                                "(8*27)/(4*19)",
+                                "(8*19)/(4*27)",
+                                "(8*4)/(19*27)"
+                            ),
+                            selected = character(0))
+               ),
+        column(4,
+               actionButton("calculate_quiz4_submit",
+                            "Check Answer",
+                            style = "background-color: #353842; border-color: transparent;"),
+               style = "margin-top: 70px; align: left"
+        )
+    ),
+    fluidRow(
+        column(8,
+               htmlOutput("calculate_quiz4_res")
+        ),
+        align="center"
+    ),
+    br(),
     
     # Action button to move to the next step
     fluidRow(column(
@@ -139,7 +272,66 @@ when_used <- tabPanel(
     # Markdown text chunk
     includeMarkdown(here::here('markdowns/when_used.md')),
     
-    ###### UI for the quiz/example goes here ######
+    # Quiz for the cohort study example
+    ## Quiz 1. Table to fill in
+    fluidRow(
+        column(12,
+               HTML("<b>Quiz 1.</b> Fill in the table below with correct values. (Double click the cell to change the value)"))
+    ),
+    
+    fluidRow(
+        column(8,
+               DTOutput(outputId="when_used_table",
+                        width = "100%"),
+               style = "align: right"
+        ),
+        column(4,
+               actionButton("when_used_quiz1_submit",
+                            "Check Answer",
+                            style = "background-color: #353842; border-color: transparent;"),
+               style = "margin-top: 200px; align: left"
+        )
+    ),
+    fluidRow(
+        column(8,
+               htmlOutput("when_used_quiz1_res")
+        ),
+        align="center"
+    ),
+    br(),
+    ## Quiz 2.
+    fluidRow(
+        column(12,
+               HTML("<b>Quiz 2.</b> What is the odds ratio of <u>exhibiting persistent suicidal behavior</u>
+               given the baseline depression in comparison to no base line depression?"))
+    ),
+    
+    fluidRow(
+        column(8,
+               radioButtons("when_used_quiz2",
+                            "",
+                            choices = c(
+                                "0.61",
+                                "1.63",
+                                "0.17",
+                                "5.97"
+                            ),
+                            selected = character(0))
+        ),
+        column(4,
+               actionButton("when_used_quiz2_submit",
+                            "Check Answer",
+                            style = "background-color: #353842; border-color: transparent;"),
+               style = "margin-top: 75px; align: left"
+        )
+    ),
+    fluidRow(
+        column(8,
+               htmlOutput("when_used_quiz2_res")
+        ),
+        align="center"
+    ),
+    br(),
     
     # Action button to move to the next step
     fluidRow(column(

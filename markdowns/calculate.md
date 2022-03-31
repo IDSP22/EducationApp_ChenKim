@@ -10,7 +10,7 @@ output:
 
 Odds ratios (OR) can be calculated using a two-by-two frequency table (also called cross-tabulation or contingency table)
 
-<img src="/Users/sookim/Documents/Courses/2nd_year/R Shiny/Assignment/EducationApp_ChenKim/images/fig_definition.jpg" width="60%" />
+<img src="/Users/sookim/Documents/Courses/2nd_year/R Shiny/Assignment/EducationApp_ChenKim/images/fig_definition.jpg" width="96%" />
 
 * Odds of event under exposure to treatment = $\frac{a}{b}$
 * Odds of event without exposure to treatment = $\frac{c}{d}$

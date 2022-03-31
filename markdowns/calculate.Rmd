@@ -10,7 +10,7 @@ output:
 
 Odds ratios (OR) can be calculated using a two-by-two frequency table (also called cross-tabulation or contingency table)
 
-```{r, include=T, echo=F, out.width = "60%"}
+```{r, include=T, echo=F, out.width = "96%"}
 knitr::include_graphics(here::here("images/fig_definition.jpg"))
 ```
 

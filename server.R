@@ -14,11 +14,25 @@ pacman::p_load(shiny,
                sortable, 
                ggthemr, 
                caret, 
-               boot)
+               boot,
+               DT)
 
 # Define server logic 
 shinyServer(function(input, output) {
 
+    ### initialize blank data frame
+    rv <- reactiveValues(
+        calc_tab = {
+            temp= data.frame(got_sick = c(0,0), didnt_get_sick = c(0,0))
+            rownames(temp) <- c("ate_pizza", "didnt_eat_pizza")
+            temp},
+        when_used_tab = {
+            temp= data.frame(persistent_suicidal_behavior = c(0,0), no_persistent_suicidal_behavior = c(0,0))
+            rownames(temp) <- c("depression_at_baseline", "no_depression_at_baseline")
+            temp
+        }
+    )
+    
     ## Definition quiz
     output$definition_quiz_res <- renderText({
         req(input$definition_quiz_submit)
@@ -40,6 +54,114 @@ shinyServer(function(input, output) {
         return(res)
     })
     
+    ## Calculate quiz
+    output$calculate_table <- renderDT({
+        DT::datatable(rv$calc_tab %>% make_pretty(), 
+                      editable = T,
+                      options = list(
+                          dom = 't',
+                          ordering = F
+                      ))    
+    })
+    
+    observeEvent(input$calculate_table_cell_edit,{
+        info = input$calculate_table_cell_edit
+        i = as.numeric(info$row)
+        j = as.numeric(info$col)
+        val = as.numeric(info$value)
+        rv$calc_tab[i,j]<-val
+        
+    })
+    
+    output$calculate_quiz1_res <- renderText({
+        req(input$calculate_quiz1_submit)
+        isolate({
+            if(sum(as.matrix(rv$calc_tab)==
+                   matrix(c(8,19,4,27),ncol=2,nrow=2,byrow=T))==4){
+                "<span style=\"color:#0b5b67\"> Correct answer!</span>"
+            }else{
+                "<span style=\"color:#C34129\"> Wrong answer. Try again!</span>"
+            }
+        })
+    })
+    
+    output$calculate_quiz2_res <- renderText({
+        req(input$calculate_quiz2_submit)
+        isolate({
+            if(input$calculate_quiz2_1==8 &
+               input$calculate_quiz2_2==19){
+                "<span style=\"color:#0b5b67\"> Correct answer!</span>"
+            }else{
+                "<span style=\"color:#C34129\"> Wrong answer. Try again!</span>"
+            }
+        })
+    })
+    
+    output$calculate_quiz3_res <- renderText({
+        req(input$calculate_quiz3_submit)
+        isolate({
+            if(input$calculate_quiz3_1==4 &
+               input$calculate_quiz3_2==27){
+                "<span style=\"color:#0b5b67\"> Correct answer!</span>"
+            }else{
+                "<span style=\"color:#C34129\"> Wrong answer. Try again!</span>"
+            }
+        })
+    })
+    
+    output$calculate_quiz4_res <- renderText({
+        req(input$calculate_quiz4_submit)
+        isolate({
+            if(input$calculate_quiz4=="(8*27)/(4*19)"){
+                "<span style=\"color:#0b5b67\"> Correct answer!</span>"
+            }else{
+                "<span style=\"color:#C34129\"> Wrong answer. Try again!</span>"
+            }
+        })
+    })
+    
+    ## when_used quiz (cohort study)
+    output$when_used_table <- renderDT({
+        DT::datatable(rv$when_used_tab %>% make_pretty(), 
+                      editable = T,
+                      options = list(
+                          dom = 't',
+                          ordering = F
+                      ))    
+    })
+    
+    observeEvent(input$when_used_table_cell_edit,{
+        info = input$when_used_table_cell_edit
+        i = as.numeric(info$row)
+        j = as.numeric(info$col)
+        val = as.numeric(info$value)
+        rv$when_used_tab[i,j]<-val
+        
+    })
+    
+    output$when_used_quiz1_res <- renderText({
+        req(input$when_used_quiz1_submit)
+        isolate({
+            if(sum(as.matrix(rv$when_used_tab)==
+                   matrix(c(45,86,32,100),ncol=2,nrow=2,byrow=T))==4){
+                "<span style=\"color:#0b5b67\"> Correct answer!</span>"
+            }else{
+                "<span style=\"color:#C34129\"> Wrong answer. Try again!</span>"
+            }
+        })
+    })
+    
+    output$when_used_quiz2_res <- renderText({
+        req(input$when_used_quiz2_submit)
+        isolate({
+            if(input$when_used_quiz2=="1.63"){
+                "<span style=\"color:#0b5b67\"> Correct answer!</span>"
+            }else{
+                "<span style=\"color:#C34129\"> Wrong answer. Try again!</span>"
+            }
+        })
+    })
+    
     ## Interpret quiz
     output$interpret_quiz_res <- renderText({
         req(input$interpret_quiz_submit)
@@ -53,7 +175,7 @@ shinyServer(function(input, output) {
     
     #### From here to the end is the step controls ####
     # intro to definition
-    observeEvent(input$`start`, {
+    observeEvent(input$start, {
         req(input$`start`)
         updateTabsetPanel(inputId = "steps", selected = "definition")
     })

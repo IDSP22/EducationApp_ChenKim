@@ -21,3 +21,9 @@ theme_ks <- bslib::bs_theme(
   heading_font = font_google("Oswald"),
   font_scale = 0.9
 )
+
+make_pretty <- function(df){
+  colnames(df) %<>% str_replace_all("_", " ") %>% str_to_title() %>% str_replace_all("Didnt", "Didn't")
+  rownames(df) %<>% str_replace_all("_", " ") %>% str_to_title() %>% str_replace_all("Didnt", "Didn't")
+  return(df)
+}
