@@ -27,3 +27,9 @@ make_pretty <- function(df){
   rownames(df) %<>% str_replace_all("_", " ") %>% str_to_title() %>% str_replace_all("Didnt", "Didn't")
   return(df)
 }
+
+format_tab <- function(df){
+  temp <- df
+  rownames(temp) <- c("ate_pizza", "didnt_eat_pizza")
+  temp %>% make_pretty()
+}

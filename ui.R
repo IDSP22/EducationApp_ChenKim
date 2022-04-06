@@ -360,10 +360,9 @@ true_vs_sample <- tabPanel(
     
     ###### UI for the quiz/example goes here ######
     h3(strong("True Population:")),
-    h4("Count: "), 
-    
+
     fluidRow(column(
-      6,
+      12,
       # True Odds Ratio Tables
       tableOutput("TrueOR")
     )),
@@ -373,8 +372,7 @@ true_vs_sample <- tabPanel(
     )),
     
     h3(strong("Sample Population:")),
-    h4("Count: "), 
-    
+
     fluidRow(column(
       6,
       # Slider Input
@@ -383,24 +381,40 @@ true_vs_sample <- tabPanel(
         "nSamp1",
         "Sample Size for People Ate Pizza",
         min = 30,
-        max = 500,
+        max = 879,
         value = 50,
         step = 5
+      )
       ),
+      column(6,
       sliderInput(
         "nSamp2",
         "Sample Size for People Did Not Eat Pizza",
         min = 30,
-        max = 500,
+        max = 388,
         value = 50,
         step = 5
-      ),
+      ))),
       
+     # submit button
+    fluidRow(
+        column(12,
+               actionButton("sample_or_submit",
+                            "Submit",
+                            style = "background-color: #353842; border-color: transparent")
+        ),
+        align = "center"),
+    
       # Sample Odds Ratio Tables
+    br(),
+      fluidRow(column(12,
       tableOutput("SampleOR")
     )),
     
-    # Action button to move to the next step
+    # sample OR calculation
+    uiOutput("SampleOR_text"),
+
+        # Action button to move to the next step
     fluidRow(column(
         12,
         # Button to move to the previous/next step
@@ -426,10 +440,9 @@ conf_int <- tabPanel(
     
     ###### UI for the quiz goes here ######
     h3(strong("True Population:")),
-    h4("Count: "), 
-    
+
     fluidRow(column(
-      6,
+      12,
       # True Odds Ratio Tables
       tableOutput("TrueORCI")
     )),
@@ -439,8 +452,7 @@ conf_int <- tabPanel(
     )),
     
     h3(strong("Sample Population:")),
-    h4("Count: "), 
-    
+
     fluidRow(column(
       6,
       # Slider Input
@@ -449,18 +461,23 @@ conf_int <- tabPanel(
         "nSamp3",
         "Sample Size for People Ate Pizza",
         min = 30,
-        max = 500,
+        max = 879,
         value = 50,
         step = 5
+      )
       ),
+      column(6,
       sliderInput(
         "nSamp4",
         "Sample Size for People Did Not Eat Pizza",
         min = 30,
-        max = 500,
+        max = 388,
         value = 50,
         step = 5
+      ))
       ),
+    fluidRow(
+        column(6,
       sliderInput(
         "ci",
         "Confidence Interval",
@@ -468,20 +485,29 @@ conf_int <- tabPanel(
         max = 0.99,
         value = 0.95,
         step = 0.01
-      ),
-      
+      )
+        ),
+      column(6,
+        actionButton("sample_or_ci_submit",
+                          "Submit",
+                          style = "background-color: #353842; border-color: transparent"),
+        style = "margin-top: 25px", 
+        align = "center")
+             
+),
+             # Sample Odds Ratio Tables
+
+     fluidRow(
+         column(12,
       # Sample Odds Ratio Tables
       tableOutput("SampleORCI")
-    )),
-    
-    (p(("Upper CI : \\(\\exp[ln(OR) + 1.96 * \\sqrt{\\frac{1}{a} + \\frac{1}{b} + \\frac{1}{c} + \\frac{1}{d})}]\\)"),
-       style = "white-space: pre-wrap"
-    )),
-    
-    (p(("Lower CI :    \\(\\exp[ln(OR) - 1.96 * \\sqrt{\\frac{1}{a} + \\frac{1}{b} + \\frac{1}{c} + \\frac{1}{d})}]\\)"),
-       style = "white-space: pre-wrap"
-    )),
+         )
+     ),
 
+    # text output of sample OR and CI
+    uiOutput("sample_or_ci_text"),
+
+    
     # Action button to move to the next step
     fluidRow(column(
         12,
