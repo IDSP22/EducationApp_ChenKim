@@ -359,6 +359,46 @@ true_vs_sample <- tabPanel(
     includeMarkdown(here::here('markdowns/true_vs_sample.md')),
     
     ###### UI for the quiz/example goes here ######
+    h3(strong("True Population:")),
+    h4("Count: "), 
+    
+    fluidRow(column(
+      6,
+      # True Odds Ratio Tables
+      tableOutput("TrueOR")
+    )),
+    
+    (p(("Odds ratio (θ) :    \\(\\frac{630*152}{239*236}= 1.63\\)"),
+       style = "white-space: pre-wrap"
+    )),
+    
+    h3(strong("Sample Population:")),
+    h4("Count: "), 
+    
+    fluidRow(column(
+      6,
+      # Slider Input
+      
+      sliderInput(
+        "nSamp1",
+        "Sample Size for People Ate Pizza",
+        min = 30,
+        max = 500,
+        value = 50,
+        step = 5
+      ),
+      sliderInput(
+        "nSamp2",
+        "Sample Size for People Did Not Eat Pizza",
+        min = 30,
+        max = 500,
+        value = 50,
+        step = 5
+      ),
+      
+      # Sample Odds Ratio Tables
+      tableOutput("SampleOR")
+    )),
     
     # Action button to move to the next step
     fluidRow(column(
@@ -385,6 +425,62 @@ conf_int <- tabPanel(
     withMathJax(includeMarkdown(here::here('markdowns/conf_int.md'))),
     
     ###### UI for the quiz goes here ######
+    h3(strong("True Population:")),
+    h4("Count: "), 
+    
+    fluidRow(column(
+      6,
+      # True Odds Ratio Tables
+      tableOutput("TrueORCI")
+    )),
+    
+    (p(("Odds ratio (θ) :    \\(\\frac{630*152}{239*236}= 1.63\\)"),
+       style = "white-space: pre-wrap"
+    )),
+    
+    h3(strong("Sample Population:")),
+    h4("Count: "), 
+    
+    fluidRow(column(
+      6,
+      # Slider Input
+      
+      sliderInput(
+        "nSamp3",
+        "Sample Size for People Ate Pizza",
+        min = 30,
+        max = 500,
+        value = 50,
+        step = 5
+      ),
+      sliderInput(
+        "nSamp4",
+        "Sample Size for People Did Not Eat Pizza",
+        min = 30,
+        max = 500,
+        value = 50,
+        step = 5
+      ),
+      sliderInput(
+        "ci",
+        "Confidence Interval",
+        min = 0.1,
+        max = 0.99,
+        value = 0.95,
+        step = 0.01
+      ),
+      
+      # Sample Odds Ratio Tables
+      tableOutput("SampleORCI")
+    )),
+    
+    (p(("Upper CI : \\(\\exp[ln(OR) + 1.96 * \\sqrt{\\frac{1}{a} + \\frac{1}{b} + \\frac{1}{c} + \\frac{1}{d})}]\\)"),
+       style = "white-space: pre-wrap"
+    )),
+    
+    (p(("Lower CI :    \\(\\exp[ln(OR) - 1.96 * \\sqrt{\\frac{1}{a} + \\frac{1}{b} + \\frac{1}{c} + \\frac{1}{d})}]\\)"),
+       style = "white-space: pre-wrap"
+    )),
 
     # Action button to move to the next step
     fluidRow(column(

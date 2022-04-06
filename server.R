@@ -54,6 +54,153 @@ shinyServer(function(input, output) {
         return(res)
     })
     
+    ## Define sample OR
+    
+    #Updating Sample Size
+    dN1 <- reactive({
+      as.integer(input$nSamp1)
+    })
+    
+    dN2 <- reactive({
+      as.integer(input$nSamp2)
+    })
+    
+    dN3 <- reactive({
+      as.integer(input$nSamp3)
+    })
+    
+    dN4 <- reactive({
+      as.integer(input$nSamp4)
+    })
+    
+    CI <- reactive({
+      as.integer(input$ci)
+    })
+    
+    sampORtab <- reactive({
+      n1 <- dN1()
+      n2 <- dN2()
+      sampORtab <- data.frame(rbind(c(n1, 0.395*n1), c(n2, 0.644*n2)))
+      colnames(sampORtab) <- c("Got sick", "Did not get sick")
+      rownames(sampORtab) <- c("Ate Pizza", "Did not eat Pizza")
+      return(sampORtab)
+    })
+    
+    sampORCItab <- reactive({
+      n3 <- dN3()
+      n4 <- dN4()
+      sampORCItab <- data.frame(rbind(c(n3, 0.395*n3), c(n4, 0.644*n4)))
+      colnames(sampORCItab) <- c("Got sick", "Did not get sick")
+      rownames(sampORCItab) <- c("Ate Pizza", "Did not eat Pizza")
+      return(sampORCItab)
+    })
+    
+    ## Define try yours
+    
+    ### Use your own data part
+    # load_data <- reactive({
+    #   dat <- read_csv(input$load_file$datapath)
+    #   return(dat)
+    #   
+    # })
+    # 
+    # outcomevar <- function(data, x){
+    #   vars <- names(data)
+    #   y <- vars[!vars %in% x]}
+    # 
+    # exposurevar <- reactive({
+    #   outcomevar(load_data(), input$X)
+    # })
+    # 
+    # ### Forest Plot
+    # 
+    # makeDatatabletoList <- function(mytable){
+    #   mylist = c()
+    #   rnum <- nrow(mytable)
+    #   for (i in 1:rnum){
+    #     mylist[[i]] = matrix(as.numeric(mytable[i,]),nrow=2,byrow=TRUE)
+    #   }
+    #   mylist
+    # }
+    # 
+    # makeTable <- function(mylist, referencerow=2)
+    # {
+    #   require("rmeta")
+    #   numstrata <- length(mylist)
+    #   # make an array "ntrt" of the number of people in the exposed group, in each stratum
+    #   # make an array "nctrl" of the number of people in the unexposed group, in each stratum
+    #   # make an array "ptrt" of the number of people in the exposed group that have the disease,
+    #   # in each stratum
+    #   # make an array "pctrl" of the number of people in the unexposed group that have the disease,
+    #   # in each stratum
+    #   ntrt <- vector()
+    #   nctrl <- vector()
+    #   ptrt <- vector()
+    #   pctrl <- vector()
+    #   if (referencerow == 1) { nonreferencerow <- 2 }
+    #   else                   { nonreferencerow <- 1 }
+    #   for (i in 1:numstrata)
+    #   {
+    #     mymatrix <- mylist[[i]]
+    #     DiseaseUnexposed <- mymatrix[referencerow,1]
+    #     ControlUnexposed <- mymatrix[referencerow,2]
+    #     totUnexposed <- DiseaseUnexposed + ControlUnexposed
+    #     nctrl[i] <- totUnexposed
+    #     pctrl[i] <- DiseaseUnexposed
+    #     DiseaseExposed <- mymatrix[nonreferencerow,1]
+    #     ControlExposed <- mymatrix[nonreferencerow,2]
+    #     totExposed <- DiseaseExposed + ControlExposed
+    #     ntrt[i] <- totExposed
+    #     ptrt[i] <- DiseaseExposed
+    #   }
+    #   names <- as.character(seq(1,numstrata))
+    #   myMH <- meta.MH(ntrt, nctrl, ptrt, pctrl, conf.level=0.95, names=names,statistic="OR")
+    #   
+    #   
+    #   tabletext<-cbind(c("","Study",myMH$names,NA,"Summary"),
+    #                    c("Treatment","(effective)",ptrt,NA,NA),
+    #                    c("Treatment","(non-effective)",pctrl, NA,NA),
+    #                    c("Control","(effective)",(ntrt-ptrt),NA,NA),
+    #                    c("Control","(non-effective)",(nctrl-pctrl), NA,NA),
+    #                    c("","OR",format((exp(myMH$logOR)),digits=3),NA,format((exp(myMH$logMH)),digits=3)))
+    # }
+    # 
+    # 
+    # makeForestPlot <- function(mylist, referencerow=2)
+    # {
+    #   require("rmeta")
+    #   numstrata <- length(mylist)
+    #   # make an array "ntrt" of the number of people in the exposed group, in each stratum
+    #   # make an array "nctrl" of the number of people in the unexposed group, in each stratum
+    #   # make an array "ptrt" of the number of people in the exposed group that have the disease,
+    #   # in each stratum
+    #   # make an array "pctrl" of the number of people in the unexposed group that have the disease,
+    #   # in each stratum
+    #   ntrt <- vector()
+    #   nctrl <- vector()
+    #   ptrt <- vector()
+    #   pctrl <- vector()
+    #   if (referencerow == 1) { nonreferencerow <- 2 }
+    #   else                   { nonreferencerow <- 1 }
+    #   for (i in 1:numstrata)
+    #   {
+    #     mymatrix <- mylist[[i]]
+    #     DiseaseUnexposed <- mymatrix[referencerow,1]
+    #     ControlUnexposed <- mymatrix[referencerow,2]
+    #     totUnexposed <- DiseaseUnexposed + ControlUnexposed
+    #     nctrl[i] <- totUnexposed
+    #     pctrl[i] <- DiseaseUnexposed
+    #     DiseaseExposed <- mymatrix[nonreferencerow,1]
+    #     ControlExposed <- mymatrix[nonreferencerow,2]
+    #     totExposed <- DiseaseExposed + ControlExposed
+    #     ntrt[i] <- totExposed
+    #     ptrt[i] <- DiseaseExposed
+    #   }
+    #   names <- as.character(seq(1,numstrata))
+    #   myMH <- meta.MH(ntrt, nctrl, ptrt, pctrl, conf.level=0.95, names=names,statistic="OR")
+    #   
+    # }
+    
     ## Calculate quiz
     output$calculate_table <- renderDT({
         DT::datatable(rv$calc_tab %>% make_pretty(), 
@@ -120,6 +267,7 @@ shinyServer(function(input, output) {
         })
     })
     
+    
     ## when_used quiz (cohort study)
     output$when_used_table <- renderDT({
         DT::datatable(rv$when_used_tab %>% make_pretty(), 
@@ -162,6 +310,30 @@ shinyServer(function(input, output) {
         })
     })
     
+    
+    ## True OR
+    tureORtab <- data.frame(rbind(c(630,249),c(236, 152)))
+    colnames(tureORtab) <- c("Got sick", "Did not get sick")
+    rownames(tureORtab) <- c("Ate Pizza", "Did not eat Pizza")
+
+    output$TrueOR <- renderTable(tureORtab, rownames = TRUE)
+    
+    ## Sample OR
+    output$SampleOR <- renderTable(sampORtab(), rownames = TRUE)
+    
+    ## True OR CI
+    tureORCItab <- data.frame(rbind(c(630,249),c(236, 152)))
+    colnames(tureORCItab) <- c("Got sick", "Did not get sick")
+    rownames(tureORCItab) <- c("Ate Pizza", "Did not eat Pizza")
+    
+    output$TrueORCI <- renderTable(tureORCItab, rownames = TRUE)
+    
+    ## Sample OR
+    output$SampleORCI <- renderTable(sampORCItab(), rownames = TRUE)
+    
+    
+    
+    
     ## Interpret quiz
     output$interpret_quiz_res <- renderText({
         req(input$interpret_quiz_submit)
@@ -172,6 +344,12 @@ shinyServer(function(input, output) {
                Confidence interval spanning across null indicates inconclusive evidence</span>")
         
     })
+    
+    ## Try yours forest plot
+    outputlist <- 
+    output$try_yours_table <- renderPlot(makeTable(gvc_list))
+    
+    
     
     #### From here to the end is the step controls ####
     # intro to definition
