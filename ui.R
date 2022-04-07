@@ -18,7 +18,8 @@ pacman::p_load(
     ggthemr,
     markdown,
     knitr,
-    DT
+    DT,
+    rmeta
 )
 
 source(here::here("helper.R"))
@@ -594,18 +595,26 @@ try_yours <- tabPanel(
       label = 'Select a .csv file:',
       accept = ".csv"
     ),
-    uiOutput('drag_drop'),
+    
+    # Shows the first 5 rows of the uploaded dataset when successful
+    HTML("<b>Data preview (first 5 rows):</b><br>"),
+    
+    div(style = 'overflow-y:scroll;',
+        tableOutput("custom_tab")),
+    
+    selectInput("exposure",
+                "Choose the exposure variable",
+                choices = NULL),
+    selectInput("outcome",
+                "Choose the outcome variable",
+                choices = NULL),
       
       fluidRow(column(
         12,
         # meta analysis table
-        tableOutput("MetaTable")
-      )),
-      
-    mainPanel(
-      plotOutput("ForestPlot")
-              )
-
+        verbatimTextOutput("your_table"),
+        uiOutput("your_or")
+      ))
         
 )
     

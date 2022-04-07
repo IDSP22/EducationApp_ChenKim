@@ -15,7 +15,8 @@ pacman::p_load(shiny,
                ggthemr, 
                caret, 
                boot,
-               DT)
+               DT, 
+               rmeta)
 
 # Define server logic 
 shinyServer(function(input, output) {
@@ -45,7 +46,9 @@ shinyServer(function(input, output) {
         define_quiz_complete = F,
         when_used_quiz_complete = c(F,F),
         calculate_quiz_complete = c(F,F,F,F),
-        interpret_quiz_complete = F
+        interpret_quiz_complete = F,
+        your_dat = NA,
+        your_expo=""
     )
 
     ## Definition quiz
@@ -442,9 +445,68 @@ shinyServer(function(input, output) {
         })
     })
     
-    ## Try yours forest plot
-    output$MetaTable <- renderTable(makeTable(load_data()), colnames = F)
-    output$ForestPlot <- renderPlot(makeForestPlot(load_data()))
+    # Try yours table preview
+    observe({
+        req(input$load_file)
+        is.csv <-
+            input$load_file$type == "text/csv" # check whether file is of .csv format
+        feedbackDanger(inputId = "load_file",
+                       show = !is.csv,
+                       text = "File has to be in .csv format")
+        req(is.csv) # read the file to the reactive object only when has correct format
+        rv$your_dat <- rio::import(input$load_file$datapath) %>% na.omit()
+    })
+    
+    output$custom_tab <- renderTable({
+        req(rv$your_dat)
+        head(rv$your_dat, n = 5)
+    })
+    
+    # populate outcome and exposure options
+    observeEvent(rv$your_dat, {
+        req(rv$your_dat)
+        rv$your_expo <- colnames(rv$your_dat)[unlist(lapply(rv$your_dat, is_dichotomous))]
+        if(length(rv$your_expo)<=1){
+           shinyalert(
+               "Use new data",
+                "Dataset does not contain enough number of dichotomous variables. Upload new data.",
+               type = "warning"
+            )
+        }else{
+        updateSelectInput(inputId = "exposure",
+                          choices = rv$your_expo
+        )
+        }
+    })
+    
+    observeEvent(input$exposure, {
+        req(input$exposure)
+        options <- colnames(rv$your_dat)[unlist(lapply(rv$your_dat, is_dichotomous))]
+
+        updateSelectInput(inputId = "outcome",
+                          choices = options[which(options!=input$exposure)]
+        )
+    })
+    
+    ## Try yours outputs
+    output$your_table <- renderPrint({
+        table(Exposure = rv$your_dat[,input$exposure], 
+              Outcome = rv$your_dat[,input$outcome])
+        })
+    
+    output$your_or <- renderUI({
+        res <- table(Exposure = rv$your_dat[,input$exposure], 
+                     Outcome = rv$your_dat[,input$outcome])
+        or <- res[1,1]*res[2,2]/(res[1,2]*res[2,1])
+        val_sqrt <- sqrt(1/res[1,1] + 1/res[1,2] + 1/res[2,1] + 1/res[2,2])
+
+        withMathJax(
+            sprintf("$$\\text{OR =} %.2f \\text{ (95%% CI =} %.2f - %.2f)$$",
+                    or,
+                    log(or)-1.96*val_sqrt,
+                    log(or)+1.96*val_sqrt
+        ))
+    })
     
     
     

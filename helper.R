@@ -33,3 +33,8 @@ format_tab <- function(df){
   rownames(temp) <- c("ate_pizza", "didnt_eat_pizza")
   temp %>% make_pretty()
 }
+
+# function to discern whether the variable is 'continuous'
+is_dichotomous <- function(var) {
+  length(unique(var)) == 2
+}
