@@ -12,7 +12,7 @@ Through this app, you will learn:
 * Confidence interval of the sample odds ratio
 * How to interpret the result
 
-At the end of this app, you will be able to upload your own choice of dataset to calculate and interpret the odds ratio that you're interested in.
+At the end of this app, you will be able to upload your own choice of dataset to calculate and interpret the odds ratio that you're interested in. The data needs to contain at least 2 dichotomous variables (for now). If you don't have such data, there's an example dataset in the "data" folder called "WaffleDivorce_2.csv". 
 
 ### References
 
