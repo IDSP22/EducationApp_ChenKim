@@ -87,108 +87,48 @@ shinyServer(function(input, output) {
     ## Define try yours
     
     ### Use your own data part
-    # load_data <- reactive({
-    #   dat <- read_csv(input$load_file$datapath)
-    #   return(dat)
-    #   
-    # })
-    # 
-    # outcomevar <- function(data, x){
-    #   vars <- names(data)
-    #   y <- vars[!vars %in% x]}
-    # 
-    # exposurevar <- reactive({
-    #   outcomevar(load_data(), input$X)
-    # })
-    # 
-    # ### Forest Plot
-    # 
-    # makeDatatabletoList <- function(mytable){
-    #   mylist = c()
-    #   rnum <- nrow(mytable)
-    #   for (i in 1:rnum){
-    #     mylist[[i]] = matrix(as.numeric(mytable[i,]),nrow=2,byrow=TRUE)
-    #   }
-    #   mylist
-    # }
-    # 
-    # makeTable <- function(mylist, referencerow=2)
-    # {
-    #   require("rmeta")
-    #   numstrata <- length(mylist)
-    #   # make an array "ntrt" of the number of people in the exposed group, in each stratum
-    #   # make an array "nctrl" of the number of people in the unexposed group, in each stratum
-    #   # make an array "ptrt" of the number of people in the exposed group that have the disease,
-    #   # in each stratum
-    #   # make an array "pctrl" of the number of people in the unexposed group that have the disease,
-    #   # in each stratum
-    #   ntrt <- vector()
-    #   nctrl <- vector()
-    #   ptrt <- vector()
-    #   pctrl <- vector()
-    #   if (referencerow == 1) { nonreferencerow <- 2 }
-    #   else                   { nonreferencerow <- 1 }
-    #   for (i in 1:numstrata)
-    #   {
-    #     mymatrix <- mylist[[i]]
-    #     DiseaseUnexposed <- mymatrix[referencerow,1]
-    #     ControlUnexposed <- mymatrix[referencerow,2]
-    #     totUnexposed <- DiseaseUnexposed + ControlUnexposed
-    #     nctrl[i] <- totUnexposed
-    #     pctrl[i] <- DiseaseUnexposed
-    #     DiseaseExposed <- mymatrix[nonreferencerow,1]
-    #     ControlExposed <- mymatrix[nonreferencerow,2]
-    #     totExposed <- DiseaseExposed + ControlExposed
-    #     ntrt[i] <- totExposed
-    #     ptrt[i] <- DiseaseExposed
-    #   }
-    #   names <- as.character(seq(1,numstrata))
-    #   myMH <- meta.MH(ntrt, nctrl, ptrt, pctrl, conf.level=0.95, names=names,statistic="OR")
-    #   
-    #   
-    #   tabletext<-cbind(c("","Study",myMH$names,NA,"Summary"),
-    #                    c("Treatment","(effective)",ptrt,NA,NA),
-    #                    c("Treatment","(non-effective)",pctrl, NA,NA),
-    #                    c("Control","(effective)",(ntrt-ptrt),NA,NA),
-    #                    c("Control","(non-effective)",(nctrl-pctrl), NA,NA),
-    #                    c("","OR",format((exp(myMH$logOR)),digits=3),NA,format((exp(myMH$logMH)),digits=3)))
-    # }
-    # 
-    # 
-    # makeForestPlot <- function(mylist, referencerow=2)
-    # {
-    #   require("rmeta")
-    #   numstrata <- length(mylist)
-    #   # make an array "ntrt" of the number of people in the exposed group, in each stratum
-    #   # make an array "nctrl" of the number of people in the unexposed group, in each stratum
-    #   # make an array "ptrt" of the number of people in the exposed group that have the disease,
-    #   # in each stratum
-    #   # make an array "pctrl" of the number of people in the unexposed group that have the disease,
-    #   # in each stratum
-    #   ntrt <- vector()
-    #   nctrl <- vector()
-    #   ptrt <- vector()
-    #   pctrl <- vector()
-    #   if (referencerow == 1) { nonreferencerow <- 2 }
-    #   else                   { nonreferencerow <- 1 }
-    #   for (i in 1:numstrata)
-    #   {
-    #     mymatrix <- mylist[[i]]
-    #     DiseaseUnexposed <- mymatrix[referencerow,1]
-    #     ControlUnexposed <- mymatrix[referencerow,2]
-    #     totUnexposed <- DiseaseUnexposed + ControlUnexposed
-    #     nctrl[i] <- totUnexposed
-    #     pctrl[i] <- DiseaseUnexposed
-    #     DiseaseExposed <- mymatrix[nonreferencerow,1]
-    #     ControlExposed <- mymatrix[nonreferencerow,2]
-    #     totExposed <- DiseaseExposed + ControlExposed
-    #     ntrt[i] <- totExposed
-    #     ptrt[i] <- DiseaseExposed
-    #   }
-    #   names <- as.character(seq(1,numstrata))
-    #   myMH <- meta.MH(ntrt, nctrl, ptrt, pctrl, conf.level=0.95, names=names,statistic="OR")
-    #   
-    # }
+    load_data <- reactive({
+      dat <- read_csv(input$load_file$datapath)
+      return(dat)
+
+    })
+     
+    ### Forest Plot
+
+    makeTable <- function(dat)
+    {
+      require("rmeta")
+      n.trt <- dat[,2]
+      n.ctrl <- dat[,3]
+      col.trt <- dat[,4] 
+      col.ctrl <- dat[,5]
+      
+      names <- names(dat)
+      myMH <- meta.MH(n.trt, n.ctrl, col.trt, col.ctrl, conf.level=0.95, names=Name,statistic="OR", data = dat, na.action = na.omit,
+                      subset=c(13,6,5,3,7,12,4,11,1,8,10,2))
+
+
+      tabletext <- cbind(c("","Study",myMH$names,NA,"Summary"),
+                       c("Treatment","(effective)",dat$col.trt[c(13,6,5,3,7,12,4,11,1,8,10,2)],NA,NA),
+                       c("Treatment","(non-effective)",dat$col.ctrl[c(13,6,5,3,7,12,4,11,1,8,10,2)], NA,NA),
+                       c("Control","(effective)",(dat$n.trt-dat$col.trt)[c(13,6,5,3,7,12,4,11,1,8,10,2)],NA,NA),
+                       c("Control","(non-effective)",(dat$n.ctrl-dat$col.ctrl)[c(13,6,5,3,7,12,4,11,1,8,10,2)], NA,NA),
+                       c("","OR",format((exp(myMH$logOR)),digits=3),NA,format((exp(myMH$logMH)),digits=3)))
+    }
+
+
+    makeForestPlot <- function(dat)
+    {
+      require("rmeta")
+      
+      myMH <- meta.MH(n.trt, n.ctrl, col.trt, col.ctrl, conf.level=0.95, names=Name,statistic="OR", data = dat, na.action = na.omit,
+                      subset=c(13,6,5,3,7,12,4,11,1,8,10,2))
+      
+      metap <- metaplot(myMH$logOR, myMH$selogOR, nn=myMH$selogOR^-2, myMH$names,
+               summn=myMH$logMH, sumse=myMH$selogMH, sumnn=myMH$selogMH^-2,
+               logeffect=T, colors=meta.colors(box="#34186f",lines="blue", zero ="red",
+                                               summary="#ff864c", text="black"))
+    }
     
     ## Calculate quiz
     output$calculate_table <- renderDT({
@@ -503,8 +443,8 @@ shinyServer(function(input, output) {
     })
     
     ## Try yours forest plot
-    outputlist <- 
-    output$try_yours_table <- renderPlot(makeTable(gvc_list))
+    output$MetaTable <- renderTable(makeTable(load_data()), colnames = F)
+    output$ForestPlot <- renderPlot(makeForestPlot(load_data()))
     
     
     

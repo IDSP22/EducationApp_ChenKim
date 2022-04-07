@@ -589,8 +589,27 @@ try_yours <- tabPanel(
     includeMarkdown(here::here('markdowns/try_yours.md')),
 
     ###### UI for the BYOD app goes here ######
-    
+    fileInput(
+      inputId = 'load_file',
+      label = 'Select a .csv file:',
+      accept = ".csv"
+    ),
+    uiOutput('drag_drop'),
+      
+      fluidRow(column(
+        12,
+        # meta analysis table
+        tableOutput("MetaTable")
+      )),
+      
+    mainPanel(
+      plotOutput("ForestPlot")
+              )
+
+        
 )
+    
+
 
 ### Compile each step to one tab sets
 tab_steps <- navlistPanel(id = "steps",
